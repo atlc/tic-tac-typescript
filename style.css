@@ -34,3 +34,16 @@
 .chaotic {
     border-left: 1px dotted black;
 }
+
+#hitmarkerButton {
+    color: white;
+	-webkit-text-stroke: 2px black;
+    font-size: 2.5em;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    margin-top: 20px;
+    background: red;
+    background: -webkit-linear-gradient(left, orange , yellow, green, cyan, blue, violet);
+    background: -o-linear-gradient(right, orange, yellow, green, cyan, blue, violet);
+    background: -moz-linear-gradient(right, orange, yellow, green, cyan, blue, violet);
+    background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet);
+}
