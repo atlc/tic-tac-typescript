@@ -1,24 +1,26 @@
 let cells = document.querySelectorAll('.row > div');
 cells.forEach(cell => cell.addEventListener('click', cellHit));
 let emptyCells:number = 9;
+let isThereAWinner:boolean;
 
 function cellHit() {
+    if (isThereAWinner) return;
     let eventTarget:HTMLInputElement = <HTMLInputElement>event.target;
     if (eventTarget.textContent === '') {
-        emptyCells % 2 ? eventTarget.textContent = 'O' : eventTarget.textContent = 'X';
+        emptyCells % 2 ? eventTarget.textContent = 'X' : eventTarget.textContent = 'O';
         emptyCells--;
-        console.log(`Empty cells: ${emptyCells}`);
-        let isThereAWinner = validateWins();
+        isThereAWinner = validateWins();
         if (isThereAWinner) {
-            event.stopPropagation();
-            let winner:string = emptyCells % 2 ? 'Congrats! "X" marks the spot!' : '"O" goodness, O wins!';
+            let winner:string = emptyCells % 2 ? '"O" goodness, O wins!' : 'Congrats! "X" marks the spot!';
             alert(winner);
-            resetBoard();
+            document.getElementById('resetButton').style.display = 'inline';
+            document.getElementById('hitmarkerButton').style.display = 'none';
         }
     }
     if (emptyCells === 0 && (!validateWins())) {
         alert(`Grab yer revolvers, cuz it's a DRAW!`);
-        resetBoard();
+        document.getElementById('resetButton').style.display = 'inline';
+        document.getElementById('hitmarkerButton').style.display = 'none';
     }
 }
 
@@ -33,7 +35,6 @@ function validateHorizontal() {
     let topRow:boolean = (cells[0].textContent !== '' && cells[0].textContent === cells[1].textContent && cells[0].textContent === cells[2].textContent);
     let middleRow:boolean = (cells[3].textContent !== '' && cells[3].textContent === cells[4].textContent && cells[3].textContent === cells[5].textContent);
     let bottomRow:boolean = (cells[6].textContent !== '' && cells[6].textContent === cells[7].textContent && cells[6].textContent === cells[8].textContent);
-    console.log(`Horizontal validation:\t${(topRow || middleRow || bottomRow).toString().toUpperCase()}\n\tTop row:${topRow}\n\tMiddle row:${middleRow}\n\tBottom row:${bottomRow}`);
     return (topRow || middleRow || bottomRow);
 }
 
@@ -41,30 +42,25 @@ function validateVertical() {
     let leftColumn:boolean = (cells[0].textContent !== '' && cells[0].textContent === cells[3].textContent && cells[0].textContent === cells[6].textContent);
     let middleColumn:boolean = (cells[1].textContent !== '' && cells[1].textContent === cells[4].textContent && cells[1].textContent === cells[7].textContent);
     let rightColumn:boolean = (cells[2].textContent !== '' && cells[2].textContent === cells[5].textContent && cells[2].textContent === cells[8].textContent);
-    console.log(`Vertical validation:\t${(leftColumn || middleColumn || rightColumn).toString().toUpperCase()}\n\tLeft column:${leftColumn}\n\tMiddle column:${middleColumn}\n\tRight column:${rightColumn}`);
     return (leftColumn || middleColumn || rightColumn);
 }
 
 function validateDiagonal() {
     let topLeftToBottomRight:boolean = (cells[0].textContent !== '' && cells[0].textContent === cells[4].textContent && cells[0].textContent === cells[8].textContent);
     let topRightToBottomLeft:boolean = (cells[2].textContent !== '' && cells[2].textContent === cells[4].textContent && cells[2].textContent === cells[6].textContent);
-    console.log(`Diagonal validation:\t${(topLeftToBottomRight || topRightToBottomLeft).toString().toUpperCase()}\n\tTL->BR:${topLeftToBottomRight}\n\tTR->BL:${topRightToBottomLeft}`);
     return (topLeftToBottomRight || topRightToBottomLeft);
 }
 
 function resetBoard() {
-    if (confirm('Play again?')) {
-        emptyCells = 9;
-        cells.forEach(cell => cell.innerHTML = '');
-    }
+    emptyCells = 9;
+    cells.forEach(cell => cell.innerHTML = '');
+    isThereAWinner = false;
+    document.getElementById('resetButton').style.display = 'none';
+    document.getElementById('hitmarkerButton').style.display = 'inline';
 }
 
 
-
-
-
-
-// Heavily modifying this tampermonkey script to get a hitmarker cursor onclick integration
+// HEAVILY modifying this tampermonkey script to get a hitmarker cursor/sound onclick integration
 // https://github.com/Rene-Sackers/MLG-Hitmarker/blob/master/Tampermonkey.js
 
 let mouse = {x: 0, y: 0};
